@@ -57,7 +57,7 @@ function stopchurn_send_update($data) {
   }
 
   $status_code = wp_remote_retrieve_response_code($response);
-  // $body        = wp_remote_retrieve_body($response);
+  // $body        = wp_remote_retrieve_body($response); var_dump($body); exit;
 
   return [
     'status' => $status_code,

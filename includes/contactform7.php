@@ -10,10 +10,14 @@ function stopchurn_cf7_sent($data) {
   if ( $submission ) {
     $cf7_data = $submission->get_posted_data();
 
+    $full_name = trim($cf7_data['your-name']);
+    $name_parts = explode(' ', $full_name, 2);
+
     stopchurn_send_user_update([
       "id" => $cf7_data['your-email'],
       "email" => $cf7_data['your-email'],
-      "name" => $cf7_data['your-name'],
+      "firstName" => $name_parts[0],
+      "lastName" => isset($name_parts[1]) ? $name_parts[1] : '',
     ]);
   }
 }
