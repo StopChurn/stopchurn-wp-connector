@@ -16,7 +16,7 @@ function stopchurn_send_user_update($data) {
   $data = [
     'data' => [
       [
-        'type' => 'update',
+        'type' => 'insert',
         'data' => [
           'tableName' => 'user',
           'brandId' => $brand_id,
@@ -57,7 +57,7 @@ function stopchurn_send_update($data) {
   }
 
   $status_code = wp_remote_retrieve_response_code($response);
-  // $body        = wp_remote_retrieve_body($response); var_dump($body); exit;
+  // $body        = wp_remote_retrieve_body($response); var_dump($args, $body); exit;
 
   return [
     'status' => $status_code,
