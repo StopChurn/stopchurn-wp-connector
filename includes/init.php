@@ -28,10 +28,37 @@ function stopchurn_send_user_update($data) {
     ]
   ];
 
-  return stopchurn_send_update($data);
+  /* wp_schedule_single_event(time() + 10, 'my_delayed_action', [$user_id]); */
+
+  return stopchurn_send_request($data, 'client-data/update');
 }
 
-function stopchurn_send_update($data) {
+function stopchurn_send_user_event($user_id, $event_name, $value = null) {
+  $options = stopchurn_settings();
+
+  $brand_id = isset($options['brand_id']) ? intval($options['brand_id']) : '';
+
+  if (empty($brand_id)) {
+    return;
+  }
+
+  $data = [
+    'data' => [
+      [
+        "brandId" => $brand_id,
+        "userId" => $user_id,
+        "name" => $event_name,
+        "value" => $value,
+      ]
+    ]
+  ];
+
+  wp_schedule_single_event(time() + 20, 'stopchurn_send_request', [$data, 'client-data/event']);
+
+  /* return stopchurn_send_request($data, 'client-data/event'); */
+}
+
+function stopchurn_send_request($data, $path) {
   $options = stopchurn_settings();
 
   $api_key = isset($options['api_key']) ? $options['api_key'] : '';
@@ -40,6 +67,8 @@ function stopchurn_send_update($data) {
   if (empty($api_key) || empty($endpoint)) {
     return;
   }
+
+  $endpoint = rtrim($endpoint, '/') . '/' . ltrim($path, '/');
 
   $args = [
     'headers' => [
@@ -63,3 +92,5 @@ function stopchurn_send_update($data) {
     'status' => $status_code,
   ];
 }
+add_action('stopchurn_send_request', 'stopchurn_send_request', 10, 2);
+

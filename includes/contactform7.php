@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-function stopchurn_cf7_sent($data) {
+function stopchurn_cf7_sent($form) {
   $submission = WPCF7_Submission::get_instance();
 
   if ( $submission ) {
@@ -54,6 +54,12 @@ function stopchurn_cf7_sent($data) {
       "firstName" => $name_parts[0],
       "lastName" => isset($name_parts[1]) ? $name_parts[1] : '',
     ]);
+
+    stopchurn_send_user_event(
+      $email,
+      'SUBMISSION',
+      $form->title(),
+    );
   }
 }
 add_action('wpcf7_before_send_mail', 'stopchurn_cf7_sent');
