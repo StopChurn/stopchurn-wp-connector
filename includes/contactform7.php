@@ -55,6 +55,18 @@ function stopchurn_cf7_sent($form) {
       "lastName" => isset($name_parts[1]) ? $name_parts[1] : '',
     ]);
 
+    stopchurn_send_user_update(
+      [
+        "id" => $form->id() . '_' . $email . '_' . uniqid(),
+        "userId" => $email,
+        "formId" => $form->id(),
+        "formTitle" => $form->title(),
+      ],
+      'formSubmission',
+      'insert',
+      true,
+    );
+
     stopchurn_send_user_event(
       $email,
       'SUBMISSION',

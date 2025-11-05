@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
   exit;
 }
 
-function stopchurn_send_user_update($data) {
+function stopchurn_send_user_update($data, $table = 'user', $type = 'insert', $async = false) {
   $options = stopchurn_settings();
 
   $brand_id = isset($options['brand_id']) ? intval($options['brand_id']) : '';
@@ -16,9 +16,9 @@ function stopchurn_send_user_update($data) {
   $data = [
     'data' => [
       [
-        'type' => 'insert',
+        'type' => $type,
         'data' => [
-          'tableName' => 'user',
+          'tableName' => $table,
           'brandId' => $brand_id,
           'data' => $data,
           'createdAt' => time(),
@@ -28,7 +28,10 @@ function stopchurn_send_user_update($data) {
     ]
   ];
 
-  /* wp_schedule_single_event(time() + 10, 'my_delayed_action', [$user_id]); */
+  if ($async) {
+    wp_schedule_single_event(time() + 20, 'stopchurn_send_request', [$data, 'client-data/update']);
+    return;
+  }
 
   return stopchurn_send_request($data, 'client-data/update');
 }
@@ -53,7 +56,7 @@ function stopchurn_send_user_event($user_id, $event_name, $value = null) {
     ]
   ];
 
-  wp_schedule_single_event(time() + 20, 'stopchurn_send_request', [$data, 'client-data/event']);
+  wp_schedule_single_event(time() + 30, 'stopchurn_send_request', [$data, 'client-data/event']);
 
   /* return stopchurn_send_request($data, 'client-data/event'); */
 }
