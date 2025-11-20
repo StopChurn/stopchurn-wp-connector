@@ -18,3 +18,4 @@ require_once STOPCHURN_PLUGIN_DIR . 'includes/settings.php';
 require_once STOPCHURN_PLUGIN_DIR . 'includes/init.php';
 require_once STOPCHURN_PLUGIN_DIR . 'includes/contactform7.php';
 require_once STOPCHURN_PLUGIN_DIR . 'includes/gravityform.php';
+require_once STOPCHURN_PLUGIN_DIR . 'includes/lifterlms.php';
