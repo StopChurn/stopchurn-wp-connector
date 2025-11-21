@@ -43,7 +43,7 @@ function stopchurn_llms_user_enrolled_in_course($user_id, $product_id) {
         "id" => $product_id . '_' . $user['email'] . '_' . uniqid(),
         "userId" => $user['email'],
         "courseId" => $product_id,
-        "courseTitle" => $course->post_title,
+        "courseTitle" => $course->get('title'),
       ],
       'course',
       'insert',
@@ -53,7 +53,7 @@ function stopchurn_llms_user_enrolled_in_course($user_id, $product_id) {
     stopchurn_send_user_event(
       $user['id'],
       'COURSE_ENROLL',
-      $course->post_title,
+      $course->get( 'title' ),
     );
   }
 }
@@ -67,8 +67,8 @@ function stopchurn_llms_user_added_to_membership_level($user_id, $product_id) {
       [
         "id" => $product_id . '_' . $user['email'] . '_' . uniqid(),
         "userId" => $user['email'],
-        "courseId" => $product_id,
-        "courseTitle" => $membership->post_title,
+        "membershipId" => $product_id,
+        "membershipTitle" => $membership->get('title'),
       ],
       'membership',
       'insert',
@@ -78,7 +78,7 @@ function stopchurn_llms_user_added_to_membership_level($user_id, $product_id) {
     stopchurn_send_user_event(
       $user['id'],
       'MEMBERSHIP_ADD',
-      $membership->post_title,
+      $membership->get('title'),
     );
   }
 
