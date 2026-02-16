@@ -56,6 +56,22 @@ function stopchurn_register() {
         'stopchurn',
         'stopchurn_section'
     );
+
+    add_settings_field(
+        'id_prefix',
+        'ID Prefix',
+        'stopchurn_id_prefix_field',
+        'stopchurn',
+        'stopchurn_section'
+    );
+
+    add_settings_field(
+        'status',
+        'Status',
+        'stopchurn_status_field',
+        'stopchurn',
+        'stopchurn_section'
+    );
 }
 add_action('admin_init', 'stopchurn_register');
 
@@ -69,6 +85,12 @@ function stopchurn_sanitize($input) {
     }
     if (isset($input['brand_id'])) {
         $new_input['brand_id'] = sanitize_text_field($input['brand_id']);
+    }
+    if (isset($input['id_prefix'])) {
+        $new_input['id_prefix'] = sanitize_text_field($input['id_prefix']);
+    }
+    if (isset($input['status'])) {
+        $new_input['status'] = sanitize_text_field($input['status']);
     }
     return $new_input;
 }
@@ -91,6 +113,18 @@ function stopchurn_brand_id_field() {
     echo "<input type='number' name='stopchurn_options[brand_id]' value='{$value}' class='regular-text' />";
 }
 
+function stopchurn_id_prefix_field() {
+    $options = stopchurn_settings();
+    $value = isset($options['id_prefix']) ? esc_attr($options['id_prefix']) : '';
+    echo "<input type='text' name='stopchurn_options[id_prefix]' value='{$value}' class='regular-text' />";
+}
+
+function stopchurn_status_field() {
+    $options = stopchurn_settings();
+    $value = isset($options['status']) ? esc_attr($options['status']) : '';
+    echo "<input type='text' name='stopchurn_options[status]' value='{$value}' class='regular-text' />";
+}
+
 function stopchurn_page_html() {
     ?>
     <div class="wrap">
@@ -105,7 +139,6 @@ function stopchurn_page_html() {
     </div>
     <?php
 }
-
 
 function stopchurn_settings() {
   return get_option('stopchurn_options');

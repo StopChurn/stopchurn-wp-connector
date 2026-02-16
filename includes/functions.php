@@ -13,6 +13,23 @@ function stopchurn_send_user_update($data, $table = 'user', $type = 'insert', $a
     return;
   }
 
+  $id_prefix = isset($options['id_prefix']) ? $options['id_prefix'] : '';
+  if (isset($data['id']) && !empty($id_prefix)) {
+    $data['id'] = $id_prefix . $data['id'];
+  }
+
+  $status = isset($options['status']) ? $options['status'] : '';
+  if (!empty($status)) {
+    $data['salesStatus'] = $status;
+  }
+
+  // TODO add a setting for this?
+  if ($table === 'user') {
+    $data['externalIds'] = [
+      'id0' => $data['id'],
+    ];
+  }
+
   $data = [
     'data' => [
       [
