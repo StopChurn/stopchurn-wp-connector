@@ -11,6 +11,7 @@ function stopchurn_gform_after_submission($entry, $form) {
     "firstName" => '',
     "lastName" => '',
   ];
+  $utms = [];
   $country_code = '';
 
   foreach ( $form['fields'] as $field ) {
@@ -42,10 +43,19 @@ function stopchurn_gform_after_submission($entry, $form) {
     ) {
       $user['lastName'] = $field->id;
     }
+
+    if (strpos($field->label, 'utm_') === 0) {
+      $utms[$field->label] = $field->id;
+    }
   }
+
 
   foreach($user as $k => $id) {
     $user[$k] = $id ? rgar( $entry, $id ) : '';
+  }
+
+  foreach($utms as $k => $id) {
+    $utms[$k] = $id ? rgar( $entry, $id ) : '';
   }
 
   if ($country_code && $user['phone']) {
@@ -61,12 +71,16 @@ function stopchurn_gform_after_submission($entry, $form) {
   stopchurn_send_user_update($user);
 
   stopchurn_send_user_update(
-    [
-      "id" => $form['id'] . '_' . $user['email'] . '_' . uniqid(),
-      "userId" => $user['email'],
-      "formId" => $form['id'],
-      "formTitle" => $form['title'],
-    ],
+    array_merge(
+      [
+        "id" => $form['id'] . '_' . $user['email'] . '_' . uniqid(),
+        "userId" => $user['email'],
+        "formId" => strval($form['id']),
+        "formTitle" => $form['title'],
+        "submittedAt" => time() * 1000,
+      ],
+      $utms
+    ),
     'formSubmission',
     'insert',
     true,

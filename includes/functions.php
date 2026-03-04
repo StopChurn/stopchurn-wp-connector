@@ -17,6 +17,9 @@ function stopchurn_send_user_update($data, $table = 'user', $type = 'insert', $a
   if (isset($data['id']) && !empty($id_prefix)) {
     $data['id'] = $id_prefix . $data['id'];
   }
+  if ($table !== 'user' && isset($data['userId']) && !empty($id_prefix)) {
+    $data['userId'] = $id_prefix . $data['userId'];
+  }
 
   $status = isset($options['status']) ? $options['status'] : '';
   if (!empty($status)) {
@@ -38,8 +41,8 @@ function stopchurn_send_user_update($data, $table = 'user', $type = 'insert', $a
           'tableName' => $table,
           'brandId' => $brand_id,
           'data' => $data,
-          'createdAt' => time(),
-          'updatedAt' => time()
+          'createdAt' => time() * 1000,
+          'updatedAt' => time() * 1000
         ],
       ]
     ]
